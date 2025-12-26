@@ -31,12 +31,14 @@ To run this application, you need to have Python 3.7 or higher installed. The re
 ## Installation
 
 1. Clone the repository:
+
    ```
    git clone <repository-url>
    cd my-uvicorn-app
    ```
 
 2. Install the dependencies:
+
    ```
    pip install -r requirements.txt
    ```
@@ -45,27 +47,51 @@ To run this application, you need to have Python 3.7 or higher installed. The re
 
 ## Running the Application
 
-To start the Uvicorn server, run the following command:
+You can run the server using either Poetry (recommended if you use `pyproject.toml`) or pip.
 
+- Using Poetry (recommended):
+
+```bash
+poetry install        # install dependencies from pyproject.toml
+poetry run start      # uses the `start` script (runs uvicorn with --reload)
 ```
+
+- Using pip/requirements.txt:
+
+```bash
+python -m pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-This will start the application in development mode, allowing for hot-reloading.
+Both options will start the application in development mode with hot-reloading.
+
+> Note: The API router is mounted at `/api`. If you're running the frontend (Next.js) in dev, a local proxy is configured to forward `/api` to this backend for convenience.
 
 ## Testing
 
-To run the tests, use the following command:
+Run tests either from the Poetry environment or with pytest installed in your venv:
 
+- With Poetry:
+
+```bash
+poetry run pytest -q
 ```
-pytest tests/test_main.py
+
+- With pip (install test deps first):
+
+```bash
+python -m pip install pytest httpx
+pytest -q
 ```
+
+This repository includes a simple test for the root endpoint in `tests/test_main.py`.
 
 ## Docker
 
 To build and run the application in a Docker container, use the following commands:
 
 1. Build the Docker image:
+
    ```
    docker build -t my-uvicorn-app .
    ```
