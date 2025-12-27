@@ -82,15 +82,21 @@ A dual-stack application that generates structured recipes and categorized shopp
 
 ### Backend Status
 
-| Component           | File                 | Status      | Description                              |
-| ------------------- | -------------------- | ----------- | ---------------------------------------- |
-| FastAPI Entry       | `app/main.py`        | ✅ Done     | CORS, router setup                       |
-| API Routes          | `app/api/routes.py`  | 🔶 Scaffold | Basic endpoints only                     |
-| Config              | `app/core/config.py` | 🔶 Scaffold | Basic config class                       |
-| **Pydantic Models** | `app/models/`        | ❌ TODO     | Recipe, Ingredient, ShoppingList schemas |
-| **AI Agents**       | `app/agents/`        | ❌ TODO     | PydanticAI + LangGraph definitions       |
-| **Database**        | `app/database/`      | ❌ TODO     | PostgreSQL/pgvector connections          |
-| **Recipe Endpoint** | `app/api/recipes.py` | ❌ TODO     | POST /api/recipes/generate               |
+| Component           | File                            | Status  | Description                                  |
+| ------------------- | ------------------------------- | ------- | -------------------------------------------- |
+| FastAPI Entry       | `app/main.py`                   | ✅ Done | CORS, router, DB lifecycle                   |
+| API Routes          | `app/api/routes.py`             | ✅ Done | Basic endpoints                              |
+| Recipe API          | `app/api/recipes.py`            | ✅ Done | Full CRUD + generate + similarity search     |
+| Config              | `app/core/config.py`            | ✅ Done | Basic config class                           |
+| Settings            | `app/core/settings.py`          | ✅ Done | Pydantic Settings with LM Studio + DB config |
+| **Pydantic Models** | `app/models/recipe.py`          | ✅ Done | Recipe, Ingredient, Instruction schemas      |
+| **Shopping List**   | `app/models/shopping_list.py`   | ✅ Done | ShoppingList, ShoppingItem schemas           |
+| **Recipe Agent**    | `app/agents/recipe_agent.py`    | ✅ Done | PydanticAI + OpenAIChatModel for LM Studio   |
+| **Embedding Agent** | `app/agents/embedding_agent.py` | ✅ Done | Vector embeddings for similarity search      |
+| **DB Connection**   | `app/database/connection.py`    | ✅ Done | Async PostgreSQL + pgvector                  |
+| **DB Models**       | `app/database/models.py`        | ✅ Done | SQLAlchemy RecipeDB with Vector(768)         |
+| **Repository**      | `app/database/repositories.py`  | ✅ Done | Recipe CRUD + similarity search operations   |
+| **Verification**    | `app/agents/verification.py`    | ❌ TODO | LangGraph verification graph (Phase 2)       |
 
 ### Frontend Status
 
@@ -109,12 +115,14 @@ A dual-stack application that generates structured recipes and categorized shopp
 
 ### Infrastructure Status
 
-| Component             | Status  | Notes                |
-| --------------------- | ------- | -------------------- |
-| Docker                | ✅ Done | Dockerfile exists    |
-| PostgreSQL + pgvector | ❌ TODO | Need docker-compose  |
-| LM Studio             | ❌ TODO | Local setup required |
-| Environment Config    | ❌ TODO | .env files           |
+| Component             | Status  | Notes                                                   |
+| --------------------- | ------- | ------------------------------------------------------- |
+| Docker                | ✅ Done | Dockerfile exists                                       |
+| PostgreSQL + pgvector | ✅ Done | Running locally, database "recipes" created             |
+| LM Studio             | ✅ Done | Running at http://127.0.0.1:1234                        |
+| Chat Model            | ✅ Done | qwen3-vl-4b-instruct-mlx loaded                         |
+| Embedding Model       | ✅ Done | text-embedding-embeddinggemma-300m-qat (768 dimensions) |
+| Environment Config    | ✅ Done | .env file with all settings                             |
 
 ---
 
@@ -125,26 +133,28 @@ A dual-stack application that generates structured recipes and categorized shopp
 ```
 app/
 ├── __init__.py
-├── main.py                 ✅ FastAPI entry point
+├── main.py                 ✅ FastAPI entry point with DB lifecycle
 ├── api/
 │   ├── __init__.py
-│   ├── routes.py           🔶 Basic routes (needs recipe endpoints)
-│   └── recipes.py          ❌ TODO: Recipe generation endpoint
+│   ├── routes.py           ✅ Basic routes
+│   └── recipes.py          ✅ Full recipe CRUD + generate + similarity
 ├── core/
-│   ├── config.py           🔶 Basic config (needs LM Studio settings)
-│   └── settings.py         ❌ TODO: Pydantic Settings
-├── models/                  ❌ TODO: Create folder
-│   ├── __init__.py
-│   ├── recipe.py           ❌ Recipe, Ingredient schemas
-│   └── shopping_list.py    ❌ ShoppingList, ShoppingItem schemas
-├── agents/                  ❌ TODO: Create folder
-│   ├── __init__.py
-│   ├── recipe_agent.py     ❌ PydanticAI recipe generator
-│   └── verification.py     ❌ LangGraph verification graph
-└── database/                ❌ TODO: Create folder
-    ├── __init__.py
-    ├── connection.py       ❌ Async PostgreSQL connection
-    └── repositories.py     ❌ Recipe CRUD operations
+│   ├── config.py           ✅ Basic config
+│   └── settings.py         ✅ Pydantic Settings with all config
+├── models/
+│   ├── __init__.py         ✅ Package init
+│   ├── recipe.py           ✅ Recipe, Ingredient, Instruction schemas
+│   └── shopping_list.py    ✅ ShoppingList, ShoppingItem schemas
+├── agents/
+│   ├── __init__.py         ✅ Package init
+│   ├── recipe_agent.py     ✅ PydanticAI recipe generator
+│   ├── embedding_agent.py  ✅ Vector embedding generation
+│   └── verification.py     ❌ TODO: LangGraph verification (Phase 2)
+└── database/
+    ├── __init__.py         ✅ Package init
+    ├── connection.py       ✅ Async PostgreSQL + pgvector
+    ├── models.py           ✅ SQLAlchemy RecipeDB model
+    └── repositories.py     ✅ Recipe CRUD + similarity operations
 ```
 
 ### Frontend (AI-recipes-generator)
