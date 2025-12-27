@@ -100,18 +100,21 @@ A dual-stack application that generates structured recipes and categorized shopp
 
 ### Frontend Status
 
-| Component             | File                                  | Status  | Description                                       |
-| --------------------- | ------------------------------------- | ------- | ------------------------------------------------- |
-| Home Page             | `app/page.tsx`                        | ✅ Done | Hero, CTA sections                                |
-| Recipe Generator Form | `components/home/RecipeGenerator.tsx` | ✅ Done | Input form (simulated API)                        |
-| UI Components         | `components/ui/`                      | ✅ Done | button, card, checkbox, input, label, scroll-area |
-| Layout                | `components/layout/`                  | ✅ Done | Header, Footer                                    |
-| **Server Actions**    | `app/actions/`                        | ❌ TODO | Backend API calls                                 |
-| **Recipe Page**       | `app/recipe/[id]/`                    | ❌ TODO | Dynamic recipe view                               |
-| **Generate Page**     | `app/generate/`                       | ❌ TODO | Full generation flow                              |
-| **Recipe Types**      | `types/recipe.ts`                     | ❌ TODO | Recipe, Ingredient interfaces                     |
-| **Shopping List**     | `components/recipe/ShoppingList.tsx`  | ❌ TODO | Aisle-grouped checklist                           |
-| **How-To Guide**      | `components/recipe/HowToGuide.tsx`    | ❌ TODO | Step-by-step cards                                |
+| Component             | File                                    | Status  | Description                                               |
+| --------------------- | --------------------------------------- | ------- | --------------------------------------------------------- |
+| Home Page             | `app/page.tsx`                          | ✅ Done | Hero, CTA sections                                        |
+| Recipe Generator Form | `components/home/RecipeGenerator.tsx`   | ✅ Done | Input form connected to /generate                         |
+| UI Components         | `components/ui/`                        | ✅ Done | button, card, checkbox, input, label, scroll-area, badge  |
+| Layout                | `components/layout/`                    | ✅ Done | Header, Footer                                            |
+| **Server Actions**    | `app/actions/recipe.ts`                 | ✅ Done | generateRecipe, getRecipe, getSimilarRecipes, listRecipes |
+| **Recipe Page**       | `app/recipe/[id]/page.tsx`              | ✅ Done | Dynamic recipe view with similar recipes                  |
+| **Generate Page**     | `app/generate/page.tsx`                 | ✅ Done | Full generation flow with form and result display         |
+| **Recipe Types**      | `types/recipe.ts`                       | ✅ Done | Recipe, Ingredient, Instruction, ShoppingList             |
+| **Shopping List**     | `components/recipe/ShoppingList.tsx`    | ✅ Done | Aisle-grouped checklist with checkboxes                   |
+| **How-To Guide**      | `components/recipe/HowToGuide.tsx`      | ✅ Done | Step-by-step cards with progress                          |
+| **Recipe Card**       | `components/recipe/RecipeCard.tsx`      | ✅ Done | Recipe preview card for listings                          |
+| **Recipe Header**     | `components/recipe/RecipeHeader.tsx`    | ✅ Done | Title, description, metadata badges                       |
+| **Ingredients List**  | `components/recipe/IngredientsList.tsx` | ✅ Done | Aisle-grouped ingredients display                         |
 
 ### Infrastructure Status
 
@@ -164,32 +167,37 @@ app/
 ├── page.tsx                ✅ Home page
 ├── layout.tsx              ✅ Root layout
 ├── globals.css             ✅ Tailwind styles
-├── actions/                 ❌ TODO: Create folder
-│   └── recipe.ts           ❌ Server actions for API
-├── generate/                ❌ TODO: Create folder
-│   └── page.tsx            ❌ Generation flow page
-└── recipe/                  ❌ TODO: Create folder
+├── actions/
+│   └── recipe.ts           ✅ Server actions for API
+├── generate/
+│   ├── page.tsx            ✅ Generation flow page
+│   └── RecipeGeneratorForm.tsx ✅ Client-side form component
+└── recipe/
     └── [id]/
-        └── page.tsx        ❌ Dynamic recipe view
+        ├── page.tsx        ✅ Dynamic recipe view
+        └── not-found.tsx   ✅ 404 page for recipes
 
 components/
 ├── home/
-│   ├── RecipeGenerator.tsx ✅ Input form
+│   ├── RecipeGenerator.tsx ✅ Input form (routes to /generate)
 │   ├── FeatureShowcase.tsx ✅ Features section
 │   └── Testimonials.tsx    ✅ Social proof
 ├── layout/
 │   ├── Header.tsx          ✅ Navigation
 │   └── Footer.tsx          ✅ Footer
-├── recipe/                  ❌ TODO: Create folder
-│   ├── HowToGuide.tsx      ❌ Step-by-step cards
-│   ├── ShoppingList.tsx    ❌ Aisle-grouped checklist
-│   └── RecipeCard.tsx      ❌ Recipe preview card
-└── ui/                      ✅ shadcn/ui components
+├── recipe/
+│   ├── index.ts            ✅ Barrel export
+│   ├── HowToGuide.tsx      ✅ Step-by-step cards with progress
+│   ├── ShoppingList.tsx    ✅ Aisle-grouped checklist
+│   ├── RecipeCard.tsx      ✅ Recipe preview card
+│   ├── RecipeHeader.tsx    ✅ Title, description, metadata
+│   └── IngredientsList.tsx ✅ Aisle-grouped ingredients
+└── ui/                      ✅ shadcn/ui components (+ badge)
 
 types/
-├── products.ts             ✅ Product interfaces (legacy?)
+├── products.ts             ✅ Product interfaces (legacy)
 ├── css.d.ts                ✅ CSS module types
-└── recipe.ts                ❌ TODO: Recipe interfaces
+└── recipe.ts               ✅ Recipe, Ingredient, Instruction, ShoppingList
 ```
 
 ---

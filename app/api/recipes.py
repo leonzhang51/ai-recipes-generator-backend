@@ -48,7 +48,6 @@ async def health_check() -> dict[str, str]:
 )
 async def generate_recipe_endpoint(
     request: GenerateRecipeRequest,
-    session: AsyncSession = Depends(get_async_session),
 ) -> GenerateRecipeResponse:
     """
     Generate a recipe based on the user's prompt.
@@ -60,7 +59,7 @@ async def generate_recipe_endpoint(
     try:
         logger.info("Generating recipe for prompt: %s", request.prompt)
 
-        # Generate the recipe using the AI agent
+        # Generate the recipe using the AI agent (this can take 30+ seconds)
         recipe = await generate_recipe(
             prompt=request.prompt,
             dietary_preferences=request.dietary_preferences,
@@ -86,15 +85,17 @@ async def generate_recipe_endpoint(
             cuisine_type=request.cuisine_type,
         )
 
-        # Save to database
-        repo = RecipeRepository(session)
-        await repo.create(
-            recipe_response=response,
-            original_prompt=request.prompt,
-            dietary_preferences=request.dietary_preferences,
-            cuisine_type=request.cuisine_type,
-            embedding=embedding,
-        )
+        # Save to database with a fresh session (avoids stale connection issues)
+        async for session in get_async_session():
+            repo = RecipeRepository(session)
+            await repo.create(
+                recipe_response=response,
+                original_prompt=request.prompt,
+                dietary_preferences=request.dietary_preferences,
+                cuisine_type=request.cuisine_type,
+                embedding=embedding,
+            )
+            break  # Only need one iteration
 
         logger.info("Successfully generated and saved recipe: %s", recipe.title)
         return response

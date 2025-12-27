@@ -32,6 +32,8 @@ async def init_db() -> None:
         settings.database_url,
         pool_size=settings.database_pool_size,
         max_overflow=settings.database_max_overflow,
+        pool_pre_ping=True,  # Validate connections before use (prevents stale connection errors)
+        pool_recycle=300,  # Recycle connections after 5 minutes
         echo=settings.debug,
     )
 
